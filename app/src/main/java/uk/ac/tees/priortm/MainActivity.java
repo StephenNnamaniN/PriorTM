@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new HomeFragment());
             } else if (itemId == R.id.calender) {
                 replaceFragment(new CalenderFragment());
+            } else if (itemId == R.id.map) {
+                    replaceFragment(new MapsFragment());
             } else if (itemId == R.id.user) {
                 replaceFragment(new UserFragment());
             }

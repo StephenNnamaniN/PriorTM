@@ -26,11 +26,21 @@ import uk.ac.tees.priortm.Model.ToDoModel;
 import uk.ac.tees.priortm.utils.DataBasehandler;
 
 public class AddNewTask extends BottomSheetDialogFragment {
+    public interface NewTaskListener {
+        void onNewTask(ToDoModel todoModel);
+    }
+
     public static final String TAG = "ActionBottomDialog";
 
     private EditText newTaskText;
     private Button newTaskSaveButton;
     private DataBasehandler db;
+
+    NewTaskListener newTaskListener;
+
+    public void setNewTaskListener(NewTaskListener newTaskListener) {
+        this.newTaskListener = newTaskListener;
+    }
 
     public static AddNewTask newInstance(){
         return new AddNewTask();
@@ -82,6 +92,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 if(s.toString().equals("")){
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
+                    AddNewTask.this.notifyAll();
                 }
                 else{
                     newTaskSaveButton.setEnabled(true);
@@ -107,6 +118,10 @@ public class AddNewTask extends BottomSheetDialogFragment {
                     task.setTask(text);
                     task.setStatus(0);
                     db.insertTask(task);
+
+                    if(newTaskListener != null) {
+                        newTaskListener.onNewTask(task);
+                    }
                 }
                  dismiss();
             }

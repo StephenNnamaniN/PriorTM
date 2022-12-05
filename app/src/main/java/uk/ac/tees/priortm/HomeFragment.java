@@ -22,7 +22,7 @@ import uk.ac.tees.priortm.Adapter.ToDoAdapter;
 import uk.ac.tees.priortm.Model.ToDoModel;
 import uk.ac.tees.priortm.utils.DataBasehandler;
 
-public class HomeFragment extends Fragment implements DialogCloseListener{
+public class HomeFragment extends Fragment implements DialogCloseListener, AddNewTask.NewTaskListener {
     private RecyclerView taskRecyclerView;
     private ToDoAdapter taskAdapter;
     private List<ToDoModel> taskList;
@@ -66,26 +66,28 @@ public class HomeFragment extends Fragment implements DialogCloseListener{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddNewTask.newInstance().show(getActivity().getSupportFragmentManager(), AddNewTask.TAG);
+                AddNewTask ant = AddNewTask.newInstance();
+                ant.setNewTaskListener(HomeFragment.this);
+                ant.show(getActivity().getSupportFragmentManager(), AddNewTask.TAG);
+
             }
         });
 
         return view;
     }
 
-//    @Override
-//    public void handleDialogCLose(DialogInterface dialog){
-//        taskList = db.getAllTasks();
-//        Collections.reverse(taskList);
-//        taskAdapter.setTasks(taskList);
-//        taskAdapter.notifyDataSetChanged();
-//    }
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
         taskList = db.getAllTasks();
         Collections.reverse(taskList);
         taskAdapter.setTasks(taskList);
+        taskAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNewTask(ToDoModel toDoModel) {
+        taskList.add(0, toDoModel);
         taskAdapter.notifyDataSetChanged();
     }
 }
